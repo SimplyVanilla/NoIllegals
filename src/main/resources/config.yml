@@ -1,0 +1,39 @@
+# Config for NoIllegals
+
+check:
+  # If that config is true, players who have OP will be checked
+  checkOPPlayers: false
+
+  # Check player's inventory when be logged
+  playerLoginCheck: true
+
+  # Check player's inventory when player closes own inventory
+  playerInventoryCloseCheck: true
+
+  # Check player's ender chest when player closes ender chest
+  enderChestCheck: true
+
+  # Check closed shulkers:
+  shulkerCloseCheck: true
+
+  # Check closed chests
+  chestCloseCheck: true
+
+  # Check player when take an item from floor
+  playerPickupCheck: true
+
+  # Item drop check
+  checkItemDrop: true
+
+  # Block place check
+  checkBlockPlace: true
+
+  # Crafting check
+  checkCrafts: true
+
+log:
+  itemRemoved: "[NoIllegals] [item] removed from [player_name]"
+
+# Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+blockedItemTypes:
+  - BEDROCK

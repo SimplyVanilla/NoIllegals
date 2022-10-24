@@ -1,4 +1,4 @@
-main: net.simplyvanilla.simplyrank.SimplyRankPlugin
+main: net.simplyvanilla.noillegals.NoIllegalsPlugin
 name: NoIllegals
 version: @version@
 api-version: 1.19

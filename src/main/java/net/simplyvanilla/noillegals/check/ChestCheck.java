@@ -18,8 +18,8 @@ public class ChestCheck implements Listener {
         if (event.getInventory().getType() == InventoryType.CHEST) {
             for (ItemStack itemStack : event.getView().getTopInventory().getContents()) {
                 if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                    itemStack.setAmount(0);
                     NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
+                    itemStack.setAmount(0);
                 }
             }
         }

@@ -16,11 +16,10 @@ public class CraftCheck implements Listener {
 
         for (ItemStack itemStack : event.getInventory().getContents()) {
             if (NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
+                NoIllegalsPlugin.log((Player) event.getWhoClicked(), itemStack.getType());
                 itemStack.setAmount(0);
                 event.setCurrentItem(new ItemStack(Material.AIR));
                 event.setCancelled(true);
-                NoIllegalsPlugin.log((Player) event.getWhoClicked(), itemStack.getType());
-
             }
         }
     }

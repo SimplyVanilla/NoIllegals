@@ -13,8 +13,8 @@ public class ItemDropCheck implements Listener {
             return;
 
         if (NoIllegalsPlugin.isItemBlocked(event.getItemDrop().getItemStack().getType())) {
-            event.getItemDrop().remove();
             NoIllegalsPlugin.log(event.getPlayer(), event.getItemDrop().getItemStack().getType());
+            event.getItemDrop().remove();
         }
     }
 }

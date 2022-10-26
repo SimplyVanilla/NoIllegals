@@ -16,8 +16,8 @@ public class LoginCheck implements Listener {
         Bukkit.getScheduler().runTaskLater(NoIllegalsPlugin.getInstance(), () -> {
             for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
                 if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                    itemStack.setAmount(0);
                     NoIllegalsPlugin.log(event.getPlayer(), itemStack.getType());
+                    itemStack.setAmount(0);
                 }
             }
         }, 1L);

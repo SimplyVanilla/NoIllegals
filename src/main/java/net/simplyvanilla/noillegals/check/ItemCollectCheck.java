@@ -13,9 +13,9 @@ public class ItemCollectCheck implements Listener {
         if (NoIllegalsPlugin.checkOPPlayers && event.getEntity().isOp())
             return;
         if (NoIllegalsPlugin.isItemBlocked(event.getItem().getItemStack().getType())) {
+            NoIllegalsPlugin.log((Player) event.getEntity(), event.getItem().getItemStack().getType());
             event.setCancelled(true);
             event.getItem().remove();
-            NoIllegalsPlugin.log((Player) event.getEntity(), event.getItem().getItemStack().getType());
         }
     }
 }

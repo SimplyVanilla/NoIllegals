@@ -15,8 +15,8 @@ public class InventoryCheck implements Listener {
             return;
         for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
             if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                itemStack.setAmount(0);
                 NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
+                itemStack.setAmount(0);
             }
         }
     }

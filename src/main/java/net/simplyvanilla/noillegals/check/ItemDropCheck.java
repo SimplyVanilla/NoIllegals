@@ -7,14 +7,13 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 
 public class ItemDropCheck implements Listener {
 
-    @EventHandler
-    void onItemDrop(PlayerDropItemEvent event) {
-        if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp())
-            return;
+  @EventHandler
+  void onItemDrop(PlayerDropItemEvent event) {
+    if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp()) return;
 
-        if (NoIllegalsPlugin.isItemBlocked(event.getItemDrop().getItemStack().getType())) {
-            NoIllegalsPlugin.log(event.getPlayer(), event.getItemDrop().getItemStack().getType());
-            event.getItemDrop().remove();
-        }
+    if (NoIllegalsPlugin.isItemBlocked(event.getItemDrop().getItemStack().getType())) {
+      NoIllegalsPlugin.log(event.getPlayer(), event.getItemDrop().getItemStack().getType());
+      event.getItemDrop().remove();
     }
+  }
 }

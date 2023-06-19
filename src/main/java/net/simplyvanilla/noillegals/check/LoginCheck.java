@@ -9,18 +9,21 @@ import org.bukkit.inventory.ItemStack;
 
 public class LoginCheck implements Listener {
 
-    @EventHandler
-    public void onLogin(PlayerLoginEvent event) {
-        if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp())
-            return;
-        Bukkit.getScheduler().runTaskLater(NoIllegalsPlugin.getInstance(), () -> {
-            for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
-                if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                    NoIllegalsPlugin.log(event.getPlayer(), itemStack.getType());
-                    itemStack.setAmount(0);
-                }
-            }
-        }, 1L);
-    }
+  @EventHandler
+  public void onLogin(PlayerLoginEvent event) {
+    if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp()) return;
 
+    Bukkit.getScheduler()
+        .runTaskLater(
+            NoIllegalsPlugin.getInstance(),
+            () -> {
+              for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
+                if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
+                  NoIllegalsPlugin.log(event.getPlayer(), itemStack.getType());
+                  itemStack.setAmount(0);
+                }
+              }
+            },
+            1L);
+  }
 }

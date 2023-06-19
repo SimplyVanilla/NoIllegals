@@ -10,18 +10,17 @@ import org.bukkit.inventory.ItemStack;
 
 public class ShulkerCheck implements Listener {
 
-    @EventHandler
-    public void checkShulker(InventoryCloseEvent event) {
-        if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp())
-            return;
+  @EventHandler
+  public void checkShulker(InventoryCloseEvent event) {
+    if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp()) return;
 
-        if (event.getInventory().getType() == InventoryType.SHULKER_BOX) {
-            for (ItemStack itemStack : event.getView().getTopInventory().getContents()) {
-                if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                    NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
-                    itemStack.setAmount(0);
-                }
-            }
+    if (event.getInventory().getType() == InventoryType.SHULKER_BOX) {
+      for (ItemStack itemStack : event.getView().getTopInventory().getContents()) {
+        if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
+          NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
+          itemStack.setAmount(0);
         }
+      }
     }
+  }
 }

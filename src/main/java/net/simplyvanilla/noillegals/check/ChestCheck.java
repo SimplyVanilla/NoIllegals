@@ -9,15 +9,20 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 public class ChestCheck implements Listener {
+  private final NoIllegalsPlugin plugin;
+
+  public ChestCheck(NoIllegalsPlugin plugin) {
+    this.plugin = plugin;
+  }
 
   @EventHandler
   public void checkChest(InventoryCloseEvent event) {
-    if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp()) return;
+    if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) return;
 
     if (event.getInventory().getType() == InventoryType.CHEST) {
       for (ItemStack itemStack : event.getView().getTopInventory().getContents()) {
-        if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-          NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
+        if (itemStack != null && this.plugin.isItemBlocked(itemStack.getType())) {
+          this.plugin.log((Player) event.getPlayer(), itemStack.getType());
           itemStack.setAmount(0);
         }
       }

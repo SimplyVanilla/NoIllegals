@@ -8,16 +8,20 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class InventoryCheck implements Listener {
+  private final NoIllegalsPlugin plugin;
 
-    @EventHandler
-    public void onPlayerInventoryClose(InventoryCloseEvent event) {
-        if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp())
-            return;
-        for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
-            if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
-                itemStack.setAmount(0);
-            }
-        }
+  public InventoryCheck(NoIllegalsPlugin plugin) {
+    this.plugin = plugin;
+  }
+
+  @EventHandler
+  public void onPlayerInventoryClose(InventoryCloseEvent event) {
+    if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) return;
+    for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
+      if (itemStack != null && this.plugin.isItemBlocked(itemStack.getType())) {
+        this.plugin.log((Player) event.getPlayer(), itemStack.getType());
+        itemStack.setAmount(0);
+      }
     }
+  }
 }

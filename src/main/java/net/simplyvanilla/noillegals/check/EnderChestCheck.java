@@ -9,20 +9,24 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.ItemStack;
 
 public class EnderChestCheck implements Listener {
+  private final NoIllegalsPlugin plugin;
 
-    @EventHandler
-    public void onInventoryOpen(InventoryOpenEvent event) { // Checks ender chest
-        if (event.getInventory().getType() != InventoryType.ENDER_CHEST)
-            return;
+  public EnderChestCheck(NoIllegalsPlugin plugin) {
+    this.plugin = plugin;
+  }
 
-        else if (NoIllegalsPlugin.checkOPPlayers && event.getPlayer().isOp())
-            return;
+  @EventHandler
+  public void onInventoryOpen(InventoryOpenEvent event) {
+    // Checks ender chest
+    if (event.getInventory().getType() != InventoryType.ENDER_CHEST) return;
 
-        for (ItemStack itemStack : event.getView().getTopInventory().getContents()) {
-            if (itemStack != null && NoIllegalsPlugin.isItemBlocked(itemStack.getType())) {
-                NoIllegalsPlugin.log((Player) event.getPlayer(), itemStack.getType());
-                itemStack.setAmount(0);
-            }
-        }
+    if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) return;
+
+    for (ItemStack itemStack : event.getView().getTopInventory().getContents()) {
+      if (itemStack != null && this.plugin.isItemBlocked(itemStack.getType())) {
+        this.plugin.log((Player) event.getPlayer(), itemStack.getType());
+        itemStack.setAmount(0);
+      }
     }
+  }
 }

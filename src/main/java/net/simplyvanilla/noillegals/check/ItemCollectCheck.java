@@ -7,15 +7,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 
 public class ItemCollectCheck implements Listener {
+  private final NoIllegalsPlugin plugin;
 
-    @EventHandler
-    public void onItemCollect(EntityPickupItemEvent event) {
-        if (NoIllegalsPlugin.checkOPPlayers && event.getEntity().isOp())
-            return;
-        if (NoIllegalsPlugin.isItemBlocked(event.getItem().getItemStack().getType())) {
-            NoIllegalsPlugin.log((Player) event.getEntity(), event.getItem().getItemStack().getType());
-            event.setCancelled(true);
-            event.getItem().remove();
-        }
+  public ItemCollectCheck(NoIllegalsPlugin plugin) {
+    this.plugin = plugin;
+  }
+
+  @EventHandler
+  public void onItemCollect(EntityPickupItemEvent event) {
+    if (this.plugin.isCheckOPPlayers() && event.getEntity().isOp()) return;
+    if (this.plugin.isItemBlocked(event.getItem().getItemStack().getType())) {
+      this.plugin.log((Player) event.getEntity(), event.getItem().getItemStack().getType());
+      event.setCancelled(true);
+      event.getItem().remove();
     }
+  }
 }

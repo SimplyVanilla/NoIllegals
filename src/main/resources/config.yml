@@ -31,9 +31,15 @@ check:
   # Crafting check
   checkCrafts: true
 
+  # Portal check
+  checkPortal: true
+
 log:
   itemRemoved: "[item] removed from [player_name]"
 
 # Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 blockedItemTypes:
   - BEDROCK
+
+deniedPortalEntering:
+  - PRIMED_TNT

@@ -55,6 +55,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new CraftCheck(this), this);
         }
 
+        if (getConfig().getBoolean("check.checkPortal")) {
+            getServer().getPluginManager().registerEvents(new PortalCheck(this), this);
+        }
+
         checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
 
         if (getConfig().isSet("log.itemRemoved")) {

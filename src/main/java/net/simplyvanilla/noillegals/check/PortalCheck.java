@@ -5,6 +5,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPortalEnterEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 
 public class PortalCheck implements Listener {
   private NoIllegalsPlugin plugin;
@@ -14,7 +15,7 @@ public class PortalCheck implements Listener {
   }
 
   @EventHandler
-  public void handlePortal(EntityPortalEnterEvent event) {
+  public void handlePortal(EntityPortalEvent event) {
     if (!this.plugin
         .getConfig()
         .getStringList("deniedPortalEntering")

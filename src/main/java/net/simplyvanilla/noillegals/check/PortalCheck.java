@@ -21,6 +21,6 @@ public class PortalCheck implements Listener {
             return;
         }
 
-        event.getEntity().remove();
+        event.setCancelled(true);
     }
 }

@@ -22,8 +22,6 @@ public class PortalCheck implements Listener {
             return;
         }
 
-
-
         event.setCancelled(true);
     }
 

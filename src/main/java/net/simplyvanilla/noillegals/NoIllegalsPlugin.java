@@ -1,105 +1,137 @@
 package net.simplyvanilla.noillegals;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
 import net.simplyvanilla.noillegals.check.*;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
-
 public final class NoIllegalsPlugin extends JavaPlugin {
 
-    private boolean checkOPPlayers;
-    private String infoLogText = "";
+  private boolean checkOPPlayers;
+  private String infoLogText = "";
+  private String inventoryOpenLogText = "";
+  private String playerItemReceiveLogText = "";
 
-    private final List<Material> blockedItems = new ArrayList<>();
+  private final List<Material> blockedItems = new ArrayList<>();
 
-    @Override
-    public void onEnable() {
-        saveDefaultConfig();
-        if (getConfig().getBoolean("check.playerLoginCheck")) {
-            getServer().getPluginManager().registerEvents(new LoginCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.playerInventoryCloseCheck")) {
-            getServer().getPluginManager().registerEvents(new InventoryCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkItemDrop")) {
-            getServer().getPluginManager().registerEvents(new ItemDropCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.playerPickupCheck")) {
-            getServer().getPluginManager().registerEvents(new ItemCollectCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.chestCloseCheck")) {
-            getServer().getPluginManager().registerEvents(new ChestCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.enderChestCheck")) {
-            getServer().getPluginManager().registerEvents(new EnderChestCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.shulkerCloseCheck")) {
-            getServer().getPluginManager().registerEvents(new ShulkerCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkBlockPlace")) {
-            getServer().getPluginManager().registerEvents(new BlockPlaceCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkCrafts")) {
-            getServer().getPluginManager().registerEvents(new CraftCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkPortal")) {
-            getServer().getPluginManager().registerEvents(new PortalCheck(this), this);
-        }
-
-        checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
-
-        if (getConfig().isSet("log.itemRemoved")) {
-            infoLogText = getConfig().getString("log.itemRemoved");
-        }
-
-        getConfig()
-            .getStringList("blockedItemTypes")
-            .forEach(
-                text -> {
-                    Material material = Material.getMaterial(text);
-                    if (material != null) {
-                        blockedItems.add(material);
-                    } else {
-                        getLogger()
-                            .log(Level.SEVERE, () -> "Material called " + text + " is cannot found!");
-                    }
-                });
+  @Override
+  public void onEnable() {
+    saveDefaultConfig();
+    if (getConfig().getBoolean("check.playerLoginCheck")) {
+      getServer().getPluginManager().registerEvents(new LoginCheck(this), this);
     }
 
-    public boolean isItemBlocked(Material material) {
-        return blockedItems.contains(material);
+    if (getConfig().getBoolean("check.checkItemDrop")) {
+      getServer().getPluginManager().registerEvents(new ItemDropCheck(this), this);
     }
 
-    public void log(Player player, Material material) {
-        if (!infoLogText.isEmpty()) {
+    if (getConfig().getBoolean("check.playerPickupCheck")) {
+      getServer().getPluginManager().registerEvents(new ItemCollectCheck(this), this);
+    }
+
+    if (getConfig().getBoolean("check.inventoryMoveItemCheck")) {
+      getServer().getPluginManager().registerEvents(new InventoryItemCheck(this), this);
+    }
+
+    if (getConfig().getBoolean("check.checkBlockPlace")) {
+      getServer().getPluginManager().registerEvents(new BlockPlaceCheck(this), this);
+    }
+
+    if (getConfig().getBoolean("check.checkCrafts")) {
+      getServer().getPluginManager().registerEvents(new CraftCheck(this), this);
+    }
+
+    if (getConfig().getBoolean("check.checkPortal")) {
+      getServer().getPluginManager().registerEvents(new PortalCheck(this), this);
+    }
+
+    if (getConfig().getBoolean("check.blockInteractionCheck")) {
+      getServer().getPluginManager().registerEvents(new BlockInteractionCheck(this), this);
+    }
+
+    checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
+
+    if (getConfig().isSet("log.itemRemoved")) {
+      infoLogText = getConfig().getString("log.itemRemoved");
+    }
+
+    if (getConfig().isSet("log.playerItemReceive")) {
+      playerItemReceiveLogText = getConfig().getString("log.playerItemReceive");
+    }
+
+    if (getConfig().isSet("log.inventoryOpen")) {
+      inventoryOpenLogText = getConfig().getString("log.inventoryOpen");
+    }
+
+    getConfig()
+        .getStringList("blockedItemTypes")
+        .forEach(
+            text -> {
+              Material material = Material.getMaterial(text);
+              if (material != null) {
+                blockedItems.add(material);
+              } else {
+                getLogger()
+                    .log(Level.SEVERE, () -> "Material called " + text + " is cannot found!");
+              }
+            });
+  }
+
+  public boolean isItemBlocked(Material material) {
+    return blockedItems.contains(material);
+  }
+
+  public void log(Player player, Material material) {
+    if (!infoLogText.isEmpty()) {
+      this.getLogger()
+          .log(
+              Level.INFO,
+              () ->
+                  infoLogText
+                      .replace("[item]", material.name())
+                      .replace("[player_name]", player.getName()));
+    }
+  }
+
+  public void logInventoryOpen(Player player, Material material, int x, int y, int z) {
+    if (!inventoryOpenLogText.isEmpty()) {
+      this.getLogger()
+          .log(
+              Level.INFO,
+              () ->
+                  inventoryOpenLogText
+                      .replace("[block_type]", material.name())
+                      .replace("[player_name]", player.getName())
+                      .replace("[x]", String.valueOf(x))
+                      .replace("[y]", String.valueOf(y))
+                      .replace("[z]", String.valueOf(z)));
+    }
+  }
+
+    public void logPlayerItemReceive(Player player, Material material, int amount) {
+        if (!playerItemReceiveLogText.isEmpty()) {
             this.getLogger()
                 .log(
                     Level.INFO,
                     () ->
-                        infoLogText
+                        playerItemReceiveLogText
                             .replace("[item]", material.name())
-                            .replace("[player_name]", player.getName()));
+                            .replace("[amount]", String.valueOf(amount))
+                            .replace("[player_name]", player.getName())
+                            .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
+                            .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));
         }
     }
 
-    public boolean isCheckOPPlayers() {
-        return checkOPPlayers;
-    }
+  public boolean isCheckOPPlayers() {
+    return checkOPPlayers;
+  }
 
-    public String getInfoLogText() {
-        return infoLogText;
-    }
+  public String getInfoLogText() {
+    return infoLogText;
+  }
 }

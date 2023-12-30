@@ -38,9 +38,5 @@ log:
 blockedItemTypes:
   - BEDROCK
 
-blockTypesInteractions:
-  - ENDER_CHEST
-  - SHULKER_BOX
-
 deniedPortalEntering:
   - PRIMED_TNT

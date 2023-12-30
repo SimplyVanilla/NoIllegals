@@ -35,7 +35,10 @@ public class BlockPlaceCheck implements Listener {
 
                     if (this.plugin.isItemBlocked(event.getBlock().getType())) {
                         Bukkit.getScheduler()
-                            .runTaskLater(this.plugin, () -> event.getBlock().setType(Material.AIR), 1L);
+                            .runTaskLater(this.plugin, () -> {
+                                this.plugin.log(event.getPlayer(), event.getBlock().getType());
+                                event.getBlock().setType(Material.AIR);
+                            }, 1L);
                     }
                 });
     }

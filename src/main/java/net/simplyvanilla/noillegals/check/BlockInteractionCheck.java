@@ -37,6 +37,6 @@ public class BlockInteractionCheck implements Listener {
             z = event.getInventory().getLocation().getBlockZ();
         }
 
-        this.plugin.logInventoryOpen(player, event.getView().getOriginalTitle(), x, y, z);
+        this.plugin.logInventoryOpen(player, event.getView().getType().name(), x, y, z);
     }
 }

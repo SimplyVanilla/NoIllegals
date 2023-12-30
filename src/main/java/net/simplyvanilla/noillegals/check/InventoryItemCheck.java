@@ -40,6 +40,8 @@ public class InventoryItemCheck implements Listener {
 
             if (item != null && this.plugin.isItemBlocked(item.getType())) {
                 item.setAmount(0);
+
+                this.plugin.log(player, item.getType());
             }
 
             if (item != null && event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)
@@ -55,6 +57,8 @@ public class InventoryItemCheck implements Listener {
 
             if (this.plugin.isItemBlocked(item.getType())) {
                 item.setAmount(0);
+
+                this.plugin.log(player, item.getType());
             }
 
             if (event.getClickedInventory() instanceof PlayerInventory) {

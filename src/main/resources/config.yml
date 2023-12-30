@@ -30,8 +30,7 @@ check:
 
 log:
   itemRemoved: "[item] removed from [player_name]"
-  blockInteraction: "[player_name] tried to interact with [block_type] at [x] [y] [z]"
-  playerItemReceive: "[player_name] received [amount]x [item] from [x] [y] [z]"
+  playerItemReceive: "[player_name] received [amount] [item] at [x] [y] [z]"
   inventoryOpen: "[player_name] opened [block_type] at [x] [y] [z]"
 
 # Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html

@@ -105,14 +105,14 @@ public final class NoIllegalsPlugin extends JavaPlugin {
         }
     }
 
-    public void logInventoryOpen(Player player, Material material, int x, int y, int z) {
+    public void logInventoryOpen(Player player, String inventoryTitle, int x, int y, int z) {
         if (!inventoryOpenLogText.isEmpty()) {
             this.getLogger()
                 .log(
                     Level.INFO,
                     () ->
                         inventoryOpenLogText
-                            .replace("[block_type]", material.name())
+                            .replace("[block_type]", inventoryTitle)
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(x))
                             .replace("[y]", String.valueOf(y))

@@ -49,7 +49,8 @@ public class InventoryItemCheck implements Listener {
             }
             if ((event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD)
                 || event.getAction().equals(InventoryAction.HOTBAR_SWAP)) &&
-                !(event.getClickedInventory() instanceof PlayerInventory)) {
+                !(event.getClickedInventory() instanceof PlayerInventory) &&
+                !item.getType().isAir()) {
                 this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
             }
         }

@@ -10,33 +10,35 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 
 public class BlockInteractionCheck implements Listener {
-  private final NoIllegalsPlugin plugin;
+    private final NoIllegalsPlugin plugin;
 
-  public BlockInteractionCheck(NoIllegalsPlugin plugin) {
-    this.plugin = plugin;
-  }
-
-  @EventHandler(ignoreCancelled = true)
-  public void handlePlayerInteract(PlayerInteractEvent event) {
-    if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) return;
-
-    Player player = event.getPlayer();
-
-    if (this.plugin.isCheckOPPlayers() && player.isOp()) {
-      return;
+    public BlockInteractionCheck(NoIllegalsPlugin plugin) {
+        this.plugin = plugin;
     }
 
-    Block block = event.getClickedBlock();
+    @EventHandler(ignoreCancelled = true)
+    public void handlePlayerInteract(PlayerInteractEvent event) {
+        if (!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            return;
+        }
 
-    if (!(block.getState() instanceof BlockInventoryHolder)) {
-      return;
+        Player player = event.getPlayer();
+
+        if (this.plugin.isCheckOPPlayers() && player.isOp()) {
+            return;
+        }
+
+        Block block = event.getClickedBlock();
+
+        if (!(block.getState() instanceof BlockInventoryHolder)) {
+            return;
+        }
+
+        this.plugin.logInventoryOpen(
+            player,
+            block.getType(),
+            block.getLocation().getBlockX(),
+            block.getLocation().getBlockY(),
+            block.getLocation().getBlockZ());
     }
-
-    this.plugin.logInventoryOpen(
-        player,
-        block.getType(),
-        block.getLocation().getBlockX(),
-        block.getLocation().getBlockY(),
-        block.getLocation().getBlockZ());
-  }
 }

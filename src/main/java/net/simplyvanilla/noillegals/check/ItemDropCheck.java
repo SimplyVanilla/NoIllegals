@@ -14,7 +14,9 @@ public class ItemDropCheck implements Listener {
 
     @EventHandler
     void onItemDrop(PlayerDropItemEvent event) {
-        if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) return;
+        if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) {
+            return;
+        }
 
         if (this.plugin.isItemBlocked(event.getItemDrop().getItemStack().getType())) {
             this.plugin.log(event.getPlayer(), event.getItemDrop().getItemStack().getType());

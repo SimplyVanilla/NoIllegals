@@ -17,11 +17,15 @@ public class CraftCheck implements Listener {
 
     @EventHandler
     public void onCraft(CraftItemEvent event) {
-        if (this.plugin.isCheckOPPlayers() && event.getWhoClicked().isOp()) return;
+        if (this.plugin.isCheckOPPlayers() && event.getWhoClicked().isOp()) {
+            return;
+        }
 
         for (ItemStack itemStack : event.getInventory().getContents()) {
             // Checks if item is null
-            if (itemStack == null) continue;
+            if (itemStack == null) {
+                continue;
+            }
             if (this.plugin.isItemBlocked(itemStack.getType())) {
                 this.plugin.log((Player) event.getWhoClicked(), itemStack.getType());
                 itemStack.setAmount(0);

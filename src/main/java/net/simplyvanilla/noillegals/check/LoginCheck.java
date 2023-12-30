@@ -16,7 +16,9 @@ public class LoginCheck implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) return;
+        if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) {
+            return;
+        }
 
         Bukkit.getScheduler()
             .runTaskLater(

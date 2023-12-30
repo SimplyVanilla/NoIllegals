@@ -7,18 +7,6 @@ check:
   # Check player's inventory when be logged
   playerLoginCheck: true
 
-  # Check player's inventory when player closes own inventory
-  playerInventoryCloseCheck: true
-
-  # Check player's ender chest when player closes ender chest
-  enderChestCheck: true
-
-  # Check closed shulkers:
-  shulkerCloseCheck: true
-
-  # Check closed chests
-  chestCloseCheck: true
-
   # Check player when take an item from floor
   playerPickupCheck: true
 
@@ -34,8 +22,17 @@ check:
   # Portal check
   checkPortal: true
 
+  # Inventory Move Item Check
+  inventoryMoveItemCheck: true
+
+  # Block Interaction Check
+  blockInteractionCheck: true
+
 log:
   itemRemoved: "[item] removed from [player_name]"
+  blockInteraction: "[player_name] tried to interact with [block_type] at [x] [y] [z]"
+  playerItemReceive: "[player_name] received [amount]x [item] from [x] [y] [z]"
+  inventoryOpen: "[player_name] opened [block_type] at [x] [y] [z]"
 
 # Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 blockedItemTypes:

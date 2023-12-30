@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NoIllegalsPlugin extends JavaPlugin {
+    private static final String PLAYER_NAME_PLACEHOLDER = "[player_name]";
 
     private boolean checkOPPlayers;
     private String infoLogText = "";
@@ -100,7 +101,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     () ->
                         infoLogText
                             .replace("[item]", material.name())
-                            .replace("[player_name]", player.getName()));
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName()));
         }
     }
 
@@ -112,7 +113,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     () ->
                         inventoryOpenLogText
                             .replace("[block_type]", material.name())
-                            .replace("[player_name]", player.getName())
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(x))
                             .replace("[y]", String.valueOf(y))
                             .replace("[z]", String.valueOf(z)));
@@ -128,7 +129,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                         playerItemReceiveLogText
                             .replace("[item]", material.name())
                             .replace("[amount]", String.valueOf(amount))
-                            .replace("[player_name]", player.getName())
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));

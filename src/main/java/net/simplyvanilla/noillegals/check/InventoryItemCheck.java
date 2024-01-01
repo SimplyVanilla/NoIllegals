@@ -46,9 +46,9 @@ public class InventoryItemCheck implements Listener {
 
             if (item != null && event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
                 if (!(event.getClickedInventory() instanceof PlayerInventory)) {
-                    this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+                    this.plugin.logPlayerItemReceive(player, item);
                 } else {
-                    this.plugin.logPlayerItemSent(player, item.getType(), item.getAmount(),
+                    this.plugin.logPlayerItemSent(player, item,
                         event.getClickedInventory()
                             .getType());
                 }
@@ -57,9 +57,9 @@ public class InventoryItemCheck implements Listener {
                 || event.getAction().equals(InventoryAction.HOTBAR_SWAP)) &&
                 !item.getType().isAir()) {
                 if (!(event.getClickedInventory() instanceof PlayerInventory)) {
-                    this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+                    this.plugin.logPlayerItemReceive(player, item);
                 } else {
-                    this.plugin.logPlayerItemSent(player, item.getType(), item.getAmount(),
+                    this.plugin.logPlayerItemSent(player, item,
                         event.getClickedInventory()
                             .getType());
                 }
@@ -78,9 +78,9 @@ public class InventoryItemCheck implements Listener {
             }
 
             if (event.getClickedInventory() instanceof PlayerInventory) {
-                this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+                this.plugin.logPlayerItemReceive(player, item);
             } else {
-                this.plugin.logPlayerItemSent(player, item.getType(), item.getAmount(),
+                this.plugin.logPlayerItemSent(player, item,
                     event.getClickedInventory()
                         .getType());
             }

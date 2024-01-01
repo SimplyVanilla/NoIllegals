@@ -3,6 +3,7 @@ package net.simplyvanilla.noillegals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import net.simplyvanilla.noillegals.check.BlockInteractionCheck;
 import net.simplyvanilla.noillegals.check.BlockPlaceCheck;
 import net.simplyvanilla.noillegals.check.CraftCheck;
@@ -16,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NoIllegalsPlugin extends JavaPlugin {
@@ -156,9 +158,9 @@ public final class NoIllegalsPlugin extends JavaPlugin {
         }
     }
 
-    public void logPlayerItemReceive(Player player, Material material, int amount) {
+    public void logPlayerItemReceive(Player player, ItemStack itemStack) {
         // We don't want to log items that are not in the loggedItemTypes list
-        if (!this.isItemLogged(material)) {
+        if (!this.isItemLogged(itemStack.getType())) {
             return;
         }
         if (!playerItemReceiveLogText.isEmpty()) {
@@ -167,19 +169,25 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         playerItemReceiveLogText
-                            .replace("[item]", material.name())
-                            .replace("[amount]", String.valueOf(amount))
+                            .replace("[item]", itemStack.getType().name())
+                            .replace("[amount]", String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
-                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace("[enchantments]",
+                                itemStack.getEnchantments().entrySet().stream()
+                                    .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
+                                    .collect(
+                                        Collectors.joining(",")))
+                );
         }
     }
 
-    public void logPlayerItemSent(Player player, Material material, int amount,
+    public void logPlayerItemSent(Player player, ItemStack itemStack,
                                   InventoryType inventoryType) {
         // We don't want to log items that are not in the loggedItemTypes list
-        if (!this.isItemLogged(material)) {
+        if (!this.isItemLogged(itemStack.getType())) {
             return;
         }
         if (!playerItemSentLogText.isEmpty()) {
@@ -188,13 +196,18 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         playerItemSentLogText
-                            .replace("[item]", material.name())
-                            .replace("[amount]", String.valueOf(amount))
+                            .replace("[item]", itemStack.getType().name())
+                            .replace("[amount]", String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[inventory_type]", inventoryType.name())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
-                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace("[enchantments]",
+                                itemStack.getEnchantments().entrySet().stream()
+                                    .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
+                                    .collect(
+                                        Collectors.joining(","))));
         }
     }
 

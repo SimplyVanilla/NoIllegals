@@ -6,11 +6,13 @@ import java.util.logging.Level;
 import net.simplyvanilla.noillegals.check.BlockInteractionCheck;
 import net.simplyvanilla.noillegals.check.BlockPlaceCheck;
 import net.simplyvanilla.noillegals.check.CraftCheck;
+import net.simplyvanilla.noillegals.check.InventoryCreationCheck;
 import net.simplyvanilla.noillegals.check.InventoryItemCheck;
 import net.simplyvanilla.noillegals.check.ItemCollectCheck;
 import net.simplyvanilla.noillegals.check.ItemDropCheck;
 import net.simplyvanilla.noillegals.check.LoginCheck;
 import net.simplyvanilla.noillegals.check.PortalCheck;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -24,6 +26,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     private String inventoryOpenLogText = "";
     private String playerItemReceiveLogText = "";
     private String playerItemSentLogText = "";
+    private String inventoryCreationLogText = "";
 
     private final List<Material> blockedItems = new ArrayList<>();
     private final List<Material> loggedItemTypes = new ArrayList<>();
@@ -63,6 +66,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new BlockInteractionCheck(this), this);
         }
 
+        if (getConfig().getBoolean("check.inventoryCreationCheck")) {
+            getServer().getPluginManager().registerEvents(new InventoryCreationCheck(this), this);
+        }
+
         checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
 
         if (getConfig().isSet("log.itemRemoved")) {
@@ -79,6 +86,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
 
         if (getConfig().isSet("log.playerItemSent")) {
             playerItemSentLogText = getConfig().getString("log.playerItemSent");
+        }
+
+        if (getConfig().isSet("log.inventoryCreation")) {
+            inventoryCreationLogText = getConfig().getString("log.inventoryCreation");
         }
 
         getConfig()
@@ -184,6 +195,22 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));
+        }
+    }
+
+    public void logInventoryCreation(Player player, InventoryType inventoryType,
+                                     Location location) {
+        if (!inventoryCreationLogText.isEmpty()) {
+            this.getLogger()
+                .log(
+                    Level.INFO,
+                    () ->
+                        inventoryCreationLogText
+                            .replace("[inventory_type]", inventoryType.name())
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace("[x]", String.valueOf(location.getBlockX()))
+                            .replace("[y]", String.valueOf(location.getBlockY()))
+                            .replace("[z]", String.valueOf(location.getBlockZ())));
         }
     }
 

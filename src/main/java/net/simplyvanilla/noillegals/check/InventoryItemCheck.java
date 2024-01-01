@@ -44,15 +44,25 @@ public class InventoryItemCheck implements Listener {
                 return;
             }
 
-            if (item != null && event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)
-                && !(event.getClickedInventory() instanceof PlayerInventory)) {
-                this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+            if (item != null && event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
+                if (!(event.getClickedInventory() instanceof PlayerInventory)) {
+                    this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+                } else {
+                    this.plugin.logPlayerItemSent(player, item.getType(), item.getAmount(),
+                        event.getClickedInventory()
+                            .getType());
+                }
             }
             if ((event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD)
                 || event.getAction().equals(InventoryAction.HOTBAR_SWAP)) &&
-                !(event.getClickedInventory() instanceof PlayerInventory) &&
                 !item.getType().isAir()) {
-                this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+                if (!(event.getClickedInventory() instanceof PlayerInventory)) {
+                    this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+                } else {
+                    this.plugin.logPlayerItemSent(player, item.getType(), item.getAmount(),
+                        event.getClickedInventory()
+                            .getType());
+                }
             }
         }
     }
@@ -69,6 +79,10 @@ public class InventoryItemCheck implements Listener {
 
             if (event.getClickedInventory() instanceof PlayerInventory) {
                 this.plugin.logPlayerItemReceive(player, item.getType(), item.getAmount());
+            } else {
+                this.plugin.logPlayerItemSent(player, item.getType(), item.getAmount(),
+                    event.getClickedInventory()
+                        .getType());
             }
         }
     }

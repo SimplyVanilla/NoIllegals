@@ -13,6 +13,7 @@ import net.simplyvanilla.noillegals.check.LoginCheck;
 import net.simplyvanilla.noillegals.check.PortalCheck;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NoIllegalsPlugin extends JavaPlugin {
@@ -22,6 +23,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     private String infoLogText = "";
     private String inventoryOpenLogText = "";
     private String playerItemReceiveLogText = "";
+    private String playerItemSentLogText = "";
 
     private final List<Material> blockedItems = new ArrayList<>();
     private final List<Material> loggedItemTypes = new ArrayList<>();
@@ -73,6 +75,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
 
         if (getConfig().isSet("log.inventoryOpen")) {
             inventoryOpenLogText = getConfig().getString("log.inventoryOpen");
+        }
+
+        if (getConfig().isSet("log.playerItemSent")) {
+            playerItemSentLogText = getConfig().getString("log.playerItemSent");
         }
 
         getConfig()
@@ -141,7 +147,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
 
     public void logPlayerItemReceive(Player player, Material material, int amount) {
         // We don't want to log items that are not in the loggedItemTypes list
-        if(!this.isItemLogged(material)) {
+        if (!this.isItemLogged(material)) {
             return;
         }
         if (!playerItemReceiveLogText.isEmpty()) {
@@ -153,6 +159,28 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                             .replace("[item]", material.name())
                             .replace("[amount]", String.valueOf(amount))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
+                            .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));
+        }
+    }
+
+    public void logPlayerItemSent(Player player, Material material, int amount,
+                                  InventoryType inventoryType) {
+        // We don't want to log items that are not in the loggedItemTypes list
+        if (!this.isItemLogged(material)) {
+            return;
+        }
+        if (!playerItemSentLogText.isEmpty()) {
+            this.getLogger()
+                .log(
+                    Level.INFO,
+                    () ->
+                        playerItemSentLogText
+                            .replace("[item]", material.name())
+                            .replace("[amount]", String.valueOf(amount))
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace("[inventory_type]", inventoryType.name())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));

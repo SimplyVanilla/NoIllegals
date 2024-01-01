@@ -52,10 +52,6 @@ public class InventoryCreationCheck implements Listener {
             return true;
         }
 
-        if (block.getType().equals(Material.ENDER_CHEST)) {
-            return true;
-        }
-
-        return false;
+        return block.getType().equals(Material.ENDER_CHEST);
     }
 }

@@ -21,6 +21,9 @@ public class ItemDropCheck implements Listener {
         if (this.plugin.isItemBlocked(event.getItemDrop().getItemStack().getType())) {
             this.plugin.log(event.getPlayer(), event.getItemDrop().getItemStack().getType());
             event.getItemDrop().remove();
+            return;
         }
+
+        this.plugin.logPlayerDroppedItem(event.getPlayer(), event.getItemDrop().getItemStack());
     }
 }

@@ -23,6 +23,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class NoIllegalsPlugin extends JavaPlugin {
     private static final String PLAYER_NAME_PLACEHOLDER = "[player_name]";
     private static final String ITEM_PLACEHOLDER = "[item]";
+    private static final String AMOUNT_PLACEHOLDER = "[amount]";
+    private static final String ENCHANTMENTS_PLACEHOLDER = "[enchantments]";
 
     private boolean checkOPPlayers;
     private String infoLogText = "";
@@ -30,6 +32,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     private String playerItemReceiveLogText = "";
     private String playerItemSentLogText = "";
     private String inventoryCreationLogText = "";
+    private String playerDroppedItemLogText = "";
 
     private final List<Material> blockedItems = new ArrayList<>();
     private final List<Material> loggedItemTypes = new ArrayList<>();
@@ -59,6 +62,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
 
         if (getConfig().isSet("log.inventoryCreation")) {
             inventoryCreationLogText = getConfig().getString("log.inventoryCreation");
+        }
+
+        if (getConfig().isSet("log.playerDroppedItem")) {
+            playerDroppedItemLogText = getConfig().getString("log.playerDroppedItem");
         }
 
         getConfig()
@@ -175,12 +182,12 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     () ->
                         playerItemReceiveLogText
                             .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
-                            .replace("[amount]", String.valueOf(itemStack.getAmount()))
+                            .replace(AMOUNT_PLACEHOLDER, String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
-                            .replace("[enchantments]",
+                            .replace(ENCHANTMENTS_PLACEHOLDER,
                                 itemStack.getEnchantments().entrySet().stream()
                                     .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
                                     .collect(
@@ -202,13 +209,13 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     () ->
                         playerItemSentLogText
                             .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
-                            .replace("[amount]", String.valueOf(itemStack.getAmount()))
+                            .replace(AMOUNT_PLACEHOLDER, String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[inventory_type]", inventoryType.name())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
-                            .replace("[enchantments]",
+                            .replace(ENCHANTMENTS_PLACEHOLDER,
                                 itemStack.getEnchantments().entrySet().stream()
                                     .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
                                     .collect(
@@ -229,6 +236,31 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                             .replace("[x]", String.valueOf(location.getBlockX()))
                             .replace("[y]", String.valueOf(location.getBlockY()))
                             .replace("[z]", String.valueOf(location.getBlockZ())));
+        }
+    }
+
+    public void logPlayerDroppedItem(Player player, ItemStack itemStack) {
+        // We don't want to log items that are not in the loggedItemTypes list
+        if (!this.isItemLogged(itemStack.getType())) {
+            return;
+        }
+        if (!playerDroppedItemLogText.isEmpty()) {
+            this.getLogger()
+                .log(
+                    Level.INFO,
+                    () ->
+                        playerDroppedItemLogText
+                            .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
+                            .replace(AMOUNT_PLACEHOLDER, String.valueOf(itemStack.getAmount()))
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
+                            .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace(ENCHANTMENTS_PLACEHOLDER,
+                                itemStack.getEnchantments().entrySet().stream()
+                                    .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
+                                    .collect(
+                                        Collectors.joining(","))));
         }
     }
 

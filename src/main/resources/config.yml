@@ -37,5 +37,9 @@ log:
 blockedItemTypes:
   - BEDROCK
 
+# Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+loggedItemTypes:
+  - DIAMOND_SWORD
+
 deniedPortalEntering:
   - PRIMED_TNT

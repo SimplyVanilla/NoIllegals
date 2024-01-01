@@ -24,6 +24,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     private String playerItemReceiveLogText = "";
 
     private final List<Material> blockedItems = new ArrayList<>();
+    private final List<Material> loggedItemTypes = new ArrayList<>();
 
     @Override
     public void onEnable() {
@@ -87,10 +88,28 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                                 () -> "Material called " + text + " is cannot found!");
                     }
                 });
+
+        getConfig()
+            .getStringList("loggedItemTypes")
+            .forEach(
+                text -> {
+                    Material material = Material.getMaterial(text);
+                    if (material != null) {
+                        loggedItemTypes.add(material);
+                    } else {
+                        getLogger()
+                            .log(Level.SEVERE,
+                                () -> "Material called " + text + " is cannot found!");
+                    }
+                });
     }
 
     public boolean isItemBlocked(Material material) {
         return blockedItems.contains(material);
+    }
+
+    public boolean isItemLogged(Material material) {
+        return loggedItemTypes.contains(material);
     }
 
     public void log(Player player, Material material) {
@@ -121,6 +140,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     }
 
     public void logPlayerItemReceive(Player player, Material material, int amount) {
+        // We don't want to log items that are not in the loggedItemTypes list
+        if(!this.isItemLogged(material)) {
+            return;
+        }
         if (!playerItemReceiveLogText.isEmpty()) {
             this.getLogger()
                 .log(

@@ -37,6 +37,7 @@ log:
   playerItemSent: "[player_name] sent [item] [amount] to [inventory_type] at [x] [y] [z] with enchantments [enchantments]"
   inventoryOpen: "[player_name] opened [block_type] at [x] [y] [z]"
   inventoryCreation: "[player_name] created [inventory_type] at [x] [y] [z]"
+  playerDroppedItem: "[player_name] dropped [item] [amount] at [x] [y] [z] with enchantments [enchantments]"
 
 # Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 blockedItemTypes:

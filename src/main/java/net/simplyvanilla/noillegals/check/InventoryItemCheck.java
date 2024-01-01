@@ -6,6 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.PlayerInventory;
 
 public class InventoryItemCheck implements Listener {
@@ -24,7 +25,6 @@ public class InventoryItemCheck implements Listener {
         if (this.plugin.isCheckOPPlayers() && player.isOp()) {
             return;
         }
-
         // handles when the player picks up an item from the inventory
         if (event.getAction().name().startsWith("PLACE_")) {
             this.handleItemPickups(player, event);
@@ -44,6 +44,10 @@ public class InventoryItemCheck implements Listener {
         if (item != null && this.plugin.isItemBlocked(item.getType())) {
             this.plugin.log(player, item.getType());
             item.setAmount(0);
+            return;
+        }
+
+        if (event.getView().getTopInventory().getType().equals(InventoryType.CRAFTING)) {
             return;
         }
 
@@ -78,7 +82,10 @@ public class InventoryItemCheck implements Listener {
             item.setAmount(0);
             return;
         }
-
+        
+        if (event.getView().getTopInventory().getType().equals(InventoryType.CRAFTING)) {
+            return;
+        }
         if (event.getClickedInventory() instanceof PlayerInventory) {
             this.plugin.logPlayerItemReceive(player, item);
         } else {

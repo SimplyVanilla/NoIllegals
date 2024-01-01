@@ -27,8 +27,7 @@ public class ItemCollectCheck implements Listener {
         if (!event.isCancelled() && event.getEntity() instanceof Player player) {
             this.plugin.logPlayerItemReceive(
                 player,
-                event.getItem().getItemStack().getType(),
-                event.getItem().getItemStack().getAmount());
+                event.getItem().getItemStack());
         }
     }
 }

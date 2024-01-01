@@ -3,31 +3,94 @@ package net.simplyvanilla.noillegals;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 import net.simplyvanilla.noillegals.check.BlockInteractionCheck;
 import net.simplyvanilla.noillegals.check.BlockPlaceCheck;
 import net.simplyvanilla.noillegals.check.CraftCheck;
+import net.simplyvanilla.noillegals.check.InventoryCreationCheck;
 import net.simplyvanilla.noillegals.check.InventoryItemCheck;
 import net.simplyvanilla.noillegals.check.ItemCollectCheck;
 import net.simplyvanilla.noillegals.check.ItemDropCheck;
 import net.simplyvanilla.noillegals.check.LoginCheck;
 import net.simplyvanilla.noillegals.check.PortalCheck;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NoIllegalsPlugin extends JavaPlugin {
     private static final String PLAYER_NAME_PLACEHOLDER = "[player_name]";
+    private static final String ITEM_PLACEHOLDER = "[item]";
 
     private boolean checkOPPlayers;
     private String infoLogText = "";
     private String inventoryOpenLogText = "";
     private String playerItemReceiveLogText = "";
+    private String playerItemSentLogText = "";
+    private String inventoryCreationLogText = "";
 
     private final List<Material> blockedItems = new ArrayList<>();
+    private final List<Material> loggedItemTypes = new ArrayList<>();
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
+        enableChecks();
+
+        checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
+
+        if (getConfig().isSet("log.itemRemoved")) {
+            infoLogText = getConfig().getString("log.itemRemoved");
+        }
+
+        if (getConfig().isSet("log.playerItemReceive")) {
+            playerItemReceiveLogText = getConfig().getString("log.playerItemReceive");
+        }
+
+        if (getConfig().isSet("log.inventoryOpen")) {
+            inventoryOpenLogText = getConfig().getString("log.inventoryOpen");
+        }
+
+        if (getConfig().isSet("log.playerItemSent")) {
+            playerItemSentLogText = getConfig().getString("log.playerItemSent");
+        }
+
+        if (getConfig().isSet("log.inventoryCreation")) {
+            inventoryCreationLogText = getConfig().getString("log.inventoryCreation");
+        }
+
+        getConfig()
+            .getStringList("blockedItemTypes")
+            .forEach(
+                text -> {
+                    Material material = Material.getMaterial(text);
+                    if (material != null) {
+                        blockedItems.add(material);
+                    } else {
+                        getLogger()
+                            .log(Level.SEVERE,
+                                () -> "Material called " + text + " is cannot found!");
+                    }
+                });
+
+        getConfig()
+            .getStringList("loggedItemTypes")
+            .forEach(
+                text -> {
+                    Material material = Material.getMaterial(text);
+                    if (material != null) {
+                        loggedItemTypes.add(material);
+                    } else {
+                        getLogger()
+                            .log(Level.SEVERE,
+                                () -> "Material called " + text + " is cannot found!");
+                    }
+                });
+    }
+
+    private void enableChecks() {
         if (getConfig().getBoolean("check.playerLoginCheck")) {
             getServer().getPluginManager().registerEvents(new LoginCheck(this), this);
         }
@@ -60,37 +123,17 @@ public final class NoIllegalsPlugin extends JavaPlugin {
             getServer().getPluginManager().registerEvents(new BlockInteractionCheck(this), this);
         }
 
-        checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
-
-        if (getConfig().isSet("log.itemRemoved")) {
-            infoLogText = getConfig().getString("log.itemRemoved");
+        if (getConfig().getBoolean("check.inventoryCreationCheck")) {
+            getServer().getPluginManager().registerEvents(new InventoryCreationCheck(this), this);
         }
-
-        if (getConfig().isSet("log.playerItemReceive")) {
-            playerItemReceiveLogText = getConfig().getString("log.playerItemReceive");
-        }
-
-        if (getConfig().isSet("log.inventoryOpen")) {
-            inventoryOpenLogText = getConfig().getString("log.inventoryOpen");
-        }
-
-        getConfig()
-            .getStringList("blockedItemTypes")
-            .forEach(
-                text -> {
-                    Material material = Material.getMaterial(text);
-                    if (material != null) {
-                        blockedItems.add(material);
-                    } else {
-                        getLogger()
-                            .log(Level.SEVERE,
-                                () -> "Material called " + text + " is cannot found!");
-                    }
-                });
     }
 
     public boolean isItemBlocked(Material material) {
         return blockedItems.contains(material);
+    }
+
+    public boolean isItemLogged(Material material) {
+        return loggedItemTypes.contains(material);
     }
 
     public void log(Player player, Material material) {
@@ -100,7 +143,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         infoLogText
-                            .replace("[item]", material.name())
+                            .replace(ITEM_PLACEHOLDER, material.name())
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName()));
         }
     }
@@ -120,19 +163,72 @@ public final class NoIllegalsPlugin extends JavaPlugin {
         }
     }
 
-    public void logPlayerItemReceive(Player player, Material material, int amount) {
+    public void logPlayerItemReceive(Player player, ItemStack itemStack) {
+        // We don't want to log items that are not in the loggedItemTypes list
+        if (!this.isItemLogged(itemStack.getType())) {
+            return;
+        }
         if (!playerItemReceiveLogText.isEmpty()) {
             this.getLogger()
                 .log(
                     Level.INFO,
                     () ->
                         playerItemReceiveLogText
-                            .replace("[item]", material.name())
-                            .replace("[amount]", String.valueOf(amount))
+                            .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
+                            .replace("[amount]", String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
-                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ())));
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace("[enchantments]",
+                                itemStack.getEnchantments().entrySet().stream()
+                                    .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
+                                    .collect(
+                                        Collectors.joining(",")))
+                );
+        }
+    }
+
+    public void logPlayerItemSent(Player player, ItemStack itemStack,
+                                  InventoryType inventoryType) {
+        // We don't want to log items that are not in the loggedItemTypes list
+        if (!this.isItemLogged(itemStack.getType())) {
+            return;
+        }
+        if (!playerItemSentLogText.isEmpty()) {
+            this.getLogger()
+                .log(
+                    Level.INFO,
+                    () ->
+                        playerItemSentLogText
+                            .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
+                            .replace("[amount]", String.valueOf(itemStack.getAmount()))
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace("[inventory_type]", inventoryType.name())
+                            .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
+                            .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
+                            .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace("[enchantments]",
+                                itemStack.getEnchantments().entrySet().stream()
+                                    .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
+                                    .collect(
+                                        Collectors.joining(","))));
+        }
+    }
+
+    public void logInventoryCreation(Player player, InventoryType inventoryType,
+                                     Location location) {
+        if (!inventoryCreationLogText.isEmpty()) {
+            this.getLogger()
+                .log(
+                    Level.INFO,
+                    () ->
+                        inventoryCreationLogText
+                            .replace("[inventory_type]", inventoryType.name())
+                            .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace("[x]", String.valueOf(location.getBlockX()))
+                            .replace("[y]", String.valueOf(location.getBlockY()))
+                            .replace("[z]", String.valueOf(location.getBlockZ())));
         }
     }
 

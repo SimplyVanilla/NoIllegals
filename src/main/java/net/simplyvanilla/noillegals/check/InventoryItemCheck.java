@@ -26,64 +26,65 @@ public class InventoryItemCheck implements Listener {
         }
 
         // handles when the player picks up an item from the inventory
-        this.handleItemPickups(player, event);
+        if (event.getAction().name().startsWith("PLACE_")) {
+            this.handleItemPickups(player, event);
+        }
 
         // handles when the player shift clicks an item, or swaps items with number keys or offhand
-        this.handleItemManipulation(event, player);
-    }
-
-    private void handleItemManipulation(InventoryClickEvent event, Player player) {
         if (event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)
             || event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD)
             || event.getAction().equals(InventoryAction.HOTBAR_SWAP)) {
-            var item = event.getCurrentItem();
-
-            if (item != null && this.plugin.isItemBlocked(item.getType())) {
-                this.plugin.log(player, item.getType());
-                item.setAmount(0);
-                return;
-            }
-
-            if (item != null && event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
-                if (!(event.getClickedInventory() instanceof PlayerInventory)) {
-                    this.plugin.logPlayerItemReceive(player, item);
-                } else {
-                    this.plugin.logPlayerItemSent(player, item,
-                        event.getClickedInventory()
-                            .getType());
-                }
-            }
-            if ((event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD)
-                || event.getAction().equals(InventoryAction.HOTBAR_SWAP)) &&
-                !item.getType().isAir()) {
-                if (!(event.getClickedInventory() instanceof PlayerInventory)) {
-                    this.plugin.logPlayerItemReceive(player, item);
-                } else {
-                    this.plugin.logPlayerItemSent(player, item,
-                        event.getClickedInventory()
-                            .getType());
-                }
-            }
+            this.handleItemManipulation(event, player);
         }
     }
 
-    private void handleItemPickups(Player player, InventoryClickEvent event) {
-        if (event.getAction().name().startsWith("PLACE_")) {
-            var item = event.getCursor();
+    private void handleItemManipulation(InventoryClickEvent event, Player player) {
+        var item = event.getCurrentItem();
 
-            if (this.plugin.isItemBlocked(item.getType())) {
-                this.plugin.log(player, item.getType());
-                item.setAmount(0);
-                return;
-            }
+        if (item != null && this.plugin.isItemBlocked(item.getType())) {
+            this.plugin.log(player, item.getType());
+            item.setAmount(0);
+            return;
+        }
 
-            if (event.getClickedInventory() instanceof PlayerInventory) {
+        if (item != null && event.getAction().equals(InventoryAction.MOVE_TO_OTHER_INVENTORY)) {
+            if (!(event.getClickedInventory() instanceof PlayerInventory)) {
                 this.plugin.logPlayerItemReceive(player, item);
             } else {
                 this.plugin.logPlayerItemSent(player, item,
                     event.getClickedInventory()
                         .getType());
             }
+        }
+        if ((event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD)
+            || event.getAction().equals(InventoryAction.HOTBAR_SWAP)) &&
+            !item.getType().isAir()) {
+            if (!(event.getClickedInventory() instanceof PlayerInventory)) {
+                this.plugin.logPlayerItemReceive(player, item);
+            } else {
+                this.plugin.logPlayerItemSent(player, item,
+                    event.getClickedInventory()
+                        .getType());
+            }
+        }
+
+    }
+
+    private void handleItemPickups(Player player, InventoryClickEvent event) {
+        var item = event.getCursor();
+
+        if (this.plugin.isItemBlocked(item.getType())) {
+            this.plugin.log(player, item.getType());
+            item.setAmount(0);
+            return;
+        }
+
+        if (event.getClickedInventory() instanceof PlayerInventory) {
+            this.plugin.logPlayerItemReceive(player, item);
+        } else {
+            this.plugin.logPlayerItemSent(player, item,
+                event.getClickedInventory()
+                    .getType());
         }
     }
 }

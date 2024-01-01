@@ -1,7 +1,10 @@
 package net.simplyvanilla.noillegals.check;
 
 import net.simplyvanilla.noillegals.NoIllegalsPlugin;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Container;
+import org.bukkit.block.EnderChest;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -16,7 +19,7 @@ public class InventoryCreationCheck implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void handleInventoryCreation(BlockPlaceEvent event) {
         // block isn't a container, so we don't care
-        if (!(event.getBlock().getState() instanceof Container container)) {
+        if (!this.isContainer(event.getBlock())) {
             return;
         }
 
@@ -25,7 +28,30 @@ public class InventoryCreationCheck implements Listener {
             return;
         }
 
-        this.plugin.logInventoryCreation(event.getPlayer(), container.getInventory().getType(),
+        String containerType = this.getContainerType(event.getBlock());
+
+        this.plugin.logInventoryCreation(event.getPlayer(), containerType,
             event.getBlock().getLocation());
+    }
+
+    private String getContainerType(Block block) {
+        if (block.getState() instanceof EnderChest) {
+            return "ENDER_CHEST";
+        }
+
+        if (block.getState() instanceof Container container) {
+            return container.getInventory().getType().name();
+        }
+
+        // should not happen
+        return "unknown";
+    }
+
+    private boolean isContainer(Block block) {
+        if (block.getState() instanceof Container) {
+            return true;
+        }
+
+        return block.getType().equals(Material.ENDER_CHEST);
     }
 }

@@ -56,8 +56,7 @@ public class InventoryItemCheck implements Listener {
                 this.plugin.logPlayerItemReceive(player, item);
             } else {
                 this.plugin.logPlayerItemSent(player, item,
-                    event.getClickedInventory()
-                        .getType());
+                    event.getView().getTopInventory().getType());
             }
         }
         if ((event.getAction().equals(InventoryAction.HOTBAR_MOVE_AND_READD)
@@ -82,7 +81,7 @@ public class InventoryItemCheck implements Listener {
             item.setAmount(0);
             return;
         }
-        
+
         if (event.getView().getTopInventory().getType().equals(InventoryType.CRAFTING)) {
             return;
         }

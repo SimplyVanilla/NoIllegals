@@ -223,7 +223,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
         }
     }
 
-    public void logInventoryCreation(Player player, InventoryType inventoryType,
+    public void logInventoryCreation(Player player, String inventoryType,
                                      Location location) {
         if (!inventoryCreationLogText.isEmpty()) {
             this.getLogger()
@@ -231,7 +231,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         inventoryCreationLogText
-                            .replace("[inventory_type]", inventoryType.name())
+                            .replace("[inventory_type]", inventoryType)
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(location.getBlockX()))
                             .replace("[y]", String.valueOf(location.getBlockY()))

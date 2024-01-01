@@ -22,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public final class NoIllegalsPlugin extends JavaPlugin {
     private static final String PLAYER_NAME_PLACEHOLDER = "[player_name]";
+    private static final String ITEM_PLACEHOLDER = "[item]";
 
     private boolean checkOPPlayers;
     private String infoLogText = "";
@@ -36,41 +37,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        if (getConfig().getBoolean("check.playerLoginCheck")) {
-            getServer().getPluginManager().registerEvents(new LoginCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkItemDrop")) {
-            getServer().getPluginManager().registerEvents(new ItemDropCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.playerPickupCheck")) {
-            getServer().getPluginManager().registerEvents(new ItemCollectCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.inventoryMoveItemCheck")) {
-            getServer().getPluginManager().registerEvents(new InventoryItemCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkBlockPlace")) {
-            getServer().getPluginManager().registerEvents(new BlockPlaceCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkCrafts")) {
-            getServer().getPluginManager().registerEvents(new CraftCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.checkPortal")) {
-            getServer().getPluginManager().registerEvents(new PortalCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.blockInteractionCheck")) {
-            getServer().getPluginManager().registerEvents(new BlockInteractionCheck(this), this);
-        }
-
-        if (getConfig().getBoolean("check.inventoryCreationCheck")) {
-            getServer().getPluginManager().registerEvents(new InventoryCreationCheck(this), this);
-        }
+        enableChecks();
 
         checkOPPlayers = getConfig().getBoolean("check.checkOPPlayers");
 
@@ -123,6 +90,44 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                 });
     }
 
+    private void enableChecks() {
+        if (getConfig().getBoolean("check.playerLoginCheck")) {
+            getServer().getPluginManager().registerEvents(new LoginCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.checkItemDrop")) {
+            getServer().getPluginManager().registerEvents(new ItemDropCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.playerPickupCheck")) {
+            getServer().getPluginManager().registerEvents(new ItemCollectCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.inventoryMoveItemCheck")) {
+            getServer().getPluginManager().registerEvents(new InventoryItemCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.checkBlockPlace")) {
+            getServer().getPluginManager().registerEvents(new BlockPlaceCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.checkCrafts")) {
+            getServer().getPluginManager().registerEvents(new CraftCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.checkPortal")) {
+            getServer().getPluginManager().registerEvents(new PortalCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.blockInteractionCheck")) {
+            getServer().getPluginManager().registerEvents(new BlockInteractionCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.inventoryCreationCheck")) {
+            getServer().getPluginManager().registerEvents(new InventoryCreationCheck(this), this);
+        }
+    }
+
     public boolean isItemBlocked(Material material) {
         return blockedItems.contains(material);
     }
@@ -138,7 +143,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         infoLogText
-                            .replace("[item]", material.name())
+                            .replace(ITEM_PLACEHOLDER, material.name())
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName()));
         }
     }
@@ -169,7 +174,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         playerItemReceiveLogText
-                            .replace("[item]", itemStack.getType().name())
+                            .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
                             .replace("[amount]", String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
@@ -196,7 +201,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                     Level.INFO,
                     () ->
                         playerItemSentLogText
-                            .replace("[item]", itemStack.getType().name())
+                            .replace(ITEM_PLACEHOLDER, itemStack.getType().name())
                             .replace("[amount]", String.valueOf(itemStack.getAmount()))
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
                             .replace("[inventory_type]", inventoryType.name())

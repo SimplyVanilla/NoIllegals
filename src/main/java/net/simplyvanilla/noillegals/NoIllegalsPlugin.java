@@ -25,6 +25,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     private static final String ITEM_PLACEHOLDER = "[item]";
     private static final String AMOUNT_PLACEHOLDER = "[amount]";
     private static final String ENCHANTMENTS_PLACEHOLDER = "[enchantments]";
+    private static final String WORLD_PLACEHOLDER = "[world]";
 
     private boolean checkOPPlayers;
     private String infoLogText = "";
@@ -164,6 +165,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                         inventoryOpenLogText
                             .replace("[block_type]", inventoryTitle)
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace(WORLD_PLACEHOLDER, player.getLocation().getWorld().getName())
                             .replace("[x]", String.valueOf(x))
                             .replace("[y]", String.valueOf(y))
                             .replace("[z]", String.valueOf(z)));
@@ -187,6 +189,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace(WORLD_PLACEHOLDER, player.getLocation().getWorld().getName())
                             .replace(ENCHANTMENTS_PLACEHOLDER,
                                 itemStack.getEnchantments().entrySet().stream()
                                     .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
@@ -215,6 +218,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace(WORLD_PLACEHOLDER, player.getLocation().getWorld().getName())
                             .replace(ENCHANTMENTS_PLACEHOLDER,
                                 itemStack.getEnchantments().entrySet().stream()
                                     .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())
@@ -233,6 +237,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                         inventoryCreationLogText
                             .replace("[inventory_type]", inventoryType)
                             .replace(PLAYER_NAME_PLACEHOLDER, player.getName())
+                            .replace(WORLD_PLACEHOLDER, player.getLocation().getWorld().getName())
                             .replace("[x]", String.valueOf(location.getBlockX()))
                             .replace("[y]", String.valueOf(location.getBlockY()))
                             .replace("[z]", String.valueOf(location.getBlockZ())));
@@ -256,6 +261,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                             .replace("[x]", String.valueOf(player.getLocation().getBlockX()))
                             .replace("[y]", String.valueOf(player.getLocation().getBlockY()))
                             .replace("[z]", String.valueOf(player.getLocation().getBlockZ()))
+                            .replace(WORLD_PLACEHOLDER, player.getLocation().getWorld().getName())
                             .replace(ENCHANTMENTS_PLACEHOLDER,
                                 itemStack.getEnchantments().entrySet().stream()
                                     .map(entry -> entry.getKey().getKey() + "=" + entry.getValue())

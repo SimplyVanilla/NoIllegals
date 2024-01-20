@@ -16,30 +16,44 @@ public class BlockPlaceCheck implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event) {
-        Bukkit.getScheduler()
-            .runTaskAsynchronously(
-                this.plugin,
-                () -> {
-                    if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) {
-                        return;
-                    }
+        Runnable checkPlacedBlockRunnable = () -> {
+            if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) {
+                return;
+            }
 
-                    // We check if the placed item is a end portal, the block that was placed against is a
-                    // end portal, and the item in hand is a ender eye.
-                    if (this.plugin.isItemBlocked(event.getBlock().getType())
-                        && event.getBlock().getType().equals(Material.END_PORTAL_FRAME)
-                        && event.getBlockAgainst().getType().equals(Material.END_PORTAL_FRAME)
-                        && event.getItemInHand().getType().equals(Material.ENDER_EYE)) {
-                        return;
-                    }
+            // We check if the placed item is a end portal, the block that was placed against is a
+            // end portal, and the item in hand is a ender eye.
+            if (this.plugin.isItemBlocked(event.getBlock().getType())
+                && event.getBlock().getType().equals(Material.END_PORTAL_FRAME)
+                && event.getBlockAgainst().getType().equals(Material.END_PORTAL_FRAME)
+                && event.getItemInHand().getType().equals(Material.ENDER_EYE)) {
+                return;
+            }
 
-                    if (this.plugin.isItemBlocked(event.getBlock().getType())) {
-                        Bukkit.getScheduler()
-                            .runTaskLater(this.plugin, () -> {
-                                this.plugin.log(event.getPlayer(), event.getBlock().getType());
-                                event.getBlock().setType(Material.AIR);
-                            }, 1L);
-                    }
-                });
+            if (this.plugin.isItemBlocked(event.getBlock().getType())) {
+                Runnable removeBlockRunnable = () -> {
+                    this.plugin.log(event.getPlayer(), event.getBlock().getType());
+                    event.getBlock().setType(Material.AIR);
+                };
+                if (NoIllegalsPlugin.isFolia()) {
+                    Bukkit.getRegionScheduler()
+                        .runDelayed(this.plugin, event.getBlock().getLocation(),
+                            scheduledTask -> removeBlockRunnable.run(), 1L);
+                } else {
+                    Bukkit.getScheduler()
+                        .runTaskLater(this.plugin, removeBlockRunnable, 1L);
+                }
+            }
+        };
+
+        if (NoIllegalsPlugin.isFolia()) {
+            Bukkit.getRegionScheduler().runDelayed(this.plugin, event.getBlock().getLocation(),
+                scheduledTask -> checkPlacedBlockRunnable.run(), 1L);
+        } else {
+            Bukkit.getScheduler()
+                .runTaskAsynchronously(
+                    this.plugin,
+                    checkPlacedBlockRunnable);
+        }
     }
 }

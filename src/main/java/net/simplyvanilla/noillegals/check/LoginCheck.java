@@ -2,6 +2,7 @@ package net.simplyvanilla.noillegals.check;
 
 import net.simplyvanilla.noillegals.NoIllegalsPlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -16,21 +17,29 @@ public class LoginCheck implements Listener {
 
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
-        if (this.plugin.isCheckOPPlayers() && event.getPlayer().isOp()) {
+        Player player = event.getPlayer();
+        if (this.plugin.isCheckOPPlayers() && player.isOp()) {
             return;
         }
 
-        Bukkit.getScheduler()
-            .runTaskLater(
-                this.plugin,
-                () -> {
-                    for (ItemStack itemStack : event.getPlayer().getInventory().getContents()) {
-                        if (itemStack != null && this.plugin.isItemBlocked(itemStack.getType())) {
-                            this.plugin.log(event.getPlayer(), itemStack.getType());
-                            itemStack.setAmount(0);
-                        }
-                    }
-                },
-                1L);
+        Runnable runnable = () -> {
+            for (ItemStack itemStack : player.getInventory().getContents()) {
+                if (itemStack != null && this.plugin.isItemBlocked(itemStack.getType())) {
+                    this.plugin.log(player, itemStack.getType());
+                    itemStack.setAmount(0);
+                }
+            }
+        };
+
+        if (NoIllegalsPlugin.isFolia()) {
+            player.getScheduler().runDelayed(this.plugin, scheduledTask -> runnable.run(), () -> {
+            }, 1L);
+        } else {
+            Bukkit.getScheduler()
+                .runTaskLater(
+                    this.plugin,
+                    runnable,
+                    1L);
+        }
     }
 }

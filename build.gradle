@@ -2,6 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
+    id("xyz.jpenilla.run-paper") version "2.1.0"
 }
 
 group 'net.simplyvanilla'
@@ -27,6 +28,12 @@ repositories {
 
 dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT'
+}
+
+tasks {
+    runServer {
+        minecraftVersion("1.19.4")
+    }
 }
 
 processResources {

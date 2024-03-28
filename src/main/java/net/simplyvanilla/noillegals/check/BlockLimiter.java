@@ -96,7 +96,7 @@ public class BlockLimiter implements Listener {
         });
     }
 
-    private class ChunkPosition {
+    private static class ChunkPosition {
         private final int x;
         private final int z;
         private final Map<Material, Integer> blocks;

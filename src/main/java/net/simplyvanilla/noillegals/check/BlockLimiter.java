@@ -1,11 +1,12 @@
 package net.simplyvanilla.noillegals.check;
 
-import it.unimi.dsi.fastutil.shorts.ShortReferenceImmutablePair;
 import net.simplyvanilla.noillegals.NoIllegalsPlugin;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 
@@ -34,5 +35,20 @@ public class BlockLimiter implements Listener {
             } catch (IllegalArgumentException e) {
                 this.plugin.logMaterialNotFound(raw);
             }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    void on(BlockPlaceEvent event) {
+        if (event.isCancelled()) return;
+
+        Player player = event.getPlayer();
+        if (player.hasPermission(this.plugin.getName() + ".bypass")) return;
+
+        Material type = event.getBlock().getType();
+        int max = this.blocks.getOrDefault(type, -1);
+        if (max > 0) {
+            //TODO: check
+            event.setCancelled(true);
+        }
     }
 }

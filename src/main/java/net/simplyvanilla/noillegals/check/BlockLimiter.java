@@ -56,10 +56,24 @@ public class BlockLimiter implements Listener {
     private class ChunkPosition {
         private final int x;
         private final int z;
+        private final Map<Material, Integer> blocks;
 
         public ChunkPosition(Chunk chunk) {
             this.x = chunk.getX();
             this.z = chunk.getZ();
+            this.blocks = new HashMap<>();
+        }
+
+        public int getPlacedBlocks(Material material) {
+            return this.blocks.getOrDefault(material, 0);
+        }
+
+        public void placeBlock(Material material) {
+            this.blocks.put(material, getPlacedBlocks(material) + 1);
+        }
+
+        public void breakBlock(Material material) {
+            this.blocks.put(material, Math.max(0, getPlacedBlocks(material) - 1));
         }
 
         public int getX() {

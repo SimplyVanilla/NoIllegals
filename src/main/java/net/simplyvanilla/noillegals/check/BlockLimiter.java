@@ -10,7 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,6 +59,22 @@ public class BlockLimiter implements Listener {
             //TODO: check
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    void on(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        getChunkPosition(block).breakBlock(block.getType());
+    }
+
+    @EventHandler
+    void on(BlockExplodeEvent event) {
+        event.blockList().forEach(b -> getChunkPosition(b).breakBlock(b.getType()));
+    }
+
+    @EventHandler
+    void on(EntityExplodeEvent event) {
+        event.blockList().forEach(b -> getChunkPosition(b).breakBlock(b.getType()));
     }
 
     private ChunkPosition getChunkPosition(Block block) {

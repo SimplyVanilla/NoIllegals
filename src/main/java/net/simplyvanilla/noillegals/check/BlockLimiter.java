@@ -1,6 +1,7 @@
 package net.simplyvanilla.noillegals.check;
 
 import net.kyori.adventure.text.Component;
+import net.md_5.bungee.api.ChatColor;
 import net.simplyvanilla.noillegals.NoIllegalsPlugin;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -63,7 +64,7 @@ public class BlockLimiter implements Listener {
             if (chunkPosition.getPlacedBlocks(type) >= max) {
                 String message = this.plugin.getConfig().getString("limiter.message");
                 if (message != null && !message.trim().isEmpty())
-                    player.sendMessage(Component.text(message
+                    player.sendMessage(Component.text(ChatColor.translateAlternateColorCodes('&', message)
                         .replace("[count]", String.valueOf(max))
                         .replace("[material]", type.name().toLowerCase().replace("_", " "))
                     ));

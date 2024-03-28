@@ -32,7 +32,7 @@ public class BlockLimiter implements Listener {
                 Material material = Material.valueOf(raw);
                 this.blocks.put(material, limitedBlocks.getInt(raw));
             } catch (IllegalArgumentException e) {
-                this.plugin.getLogger().warning("Could not find material '%s'".formatted(raw));
+                this.plugin.logMaterialNotFound(raw);
             }
-    })
+    }
 }

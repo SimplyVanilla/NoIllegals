@@ -15,6 +15,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.generator.WorldInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,6 +106,11 @@ public class BlockLimiter implements Listener {
             this.x = chunk.getX();
             this.z = chunk.getZ();
             this.blocks = new HashMap<>();
+            WorldInfo worldInfo = chunk.getWorld();
+            for (int i = 0; i < 16; i++)
+                for (int j = 0; j < 16; j++)
+                    for (int k = worldInfo.getMinHeight(); k < worldInfo.getMaxHeight(); k++)
+                        placeBlock(chunk.getBlock(i, k, j).getType());
         }
 
         public int getPlacedBlocks(Material material) {

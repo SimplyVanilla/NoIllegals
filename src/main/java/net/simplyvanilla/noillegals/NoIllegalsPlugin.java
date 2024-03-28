@@ -23,6 +23,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public final class NoIllegalsPlugin extends JavaPlugin {
     private static final String PLAYER_NAME_PLACEHOLDER = "[player_name]";
     private static final String ITEM_PLACEHOLDER = "[item]";
+    private static final String MATERIAL_PLACEHOLDER = "[material]";
     private static final String AMOUNT_PLACEHOLDER = "[amount]";
     private static final String ENCHANTMENTS_PLACEHOLDER = "[enchantments]";
     private static final String WORLD_PLACEHOLDER = "[world]";
@@ -34,6 +35,7 @@ public final class NoIllegalsPlugin extends JavaPlugin {
     private String playerItemSentLogText = "";
     private String inventoryCreationLogText = "";
     private String playerDroppedItemLogText = "";
+    private String materialNotFound = "";
 
     private final List<Material> blockedItems = new ArrayList<>();
     private final List<Material> loggedItemTypes = new ArrayList<>();
@@ -67,6 +69,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
 
         if (getConfig().isSet("log.playerDroppedItem")) {
             playerDroppedItemLogText = getConfig().getString("log.playerDroppedItem");
+        }
+
+        if (getConfig().isSet("log.materialNotFound")) {
+            materialNotFound = getConfig().getString("log.materialNotFound");
         }
 
         getConfig()
@@ -268,6 +274,15 @@ public final class NoIllegalsPlugin extends JavaPlugin {
                                     .collect(
                                         Collectors.joining(","))));
         }
+    }
+
+    public void logMaterialNotFound(String material) {
+        this.getLogger()
+            .log(
+                Level.INFO,
+                () ->
+                    materialNotFound
+                        .replace(MATERIAL_PLACEHOLDER, material));
     }
 
     public boolean isCheckOPPlayers() {

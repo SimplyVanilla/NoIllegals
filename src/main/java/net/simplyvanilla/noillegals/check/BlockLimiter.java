@@ -1,6 +1,7 @@
 package net.simplyvanilla.noillegals.check;
 
 import net.simplyvanilla.noillegals.NoIllegalsPlugin;
+import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -49,6 +50,24 @@ public class BlockLimiter implements Listener {
         if (max > 0) {
             //TODO: check
             event.setCancelled(true);
+        }
+    }
+
+    private class ChunkPosition {
+        private final int x;
+        private final int z;
+
+        public ChunkPosition(Chunk chunk) {
+            this.x = chunk.getX();
+            this.z = chunk.getZ();
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getZ() {
+            return z;
         }
     }
 }

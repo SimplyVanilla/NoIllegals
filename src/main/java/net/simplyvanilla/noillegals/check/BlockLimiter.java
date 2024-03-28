@@ -1,5 +1,6 @@
 package net.simplyvanilla.noillegals.check;
 
+import net.kyori.adventure.text.Component;
 import net.simplyvanilla.noillegals.NoIllegalsPlugin;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -53,11 +54,20 @@ public class BlockLimiter implements Listener {
         Player player = event.getPlayer();
         if (player.hasPermission(this.plugin.getName() + ".bypass")) return;
 
-        Material type = event.getBlock().getType();
+        Block block = event.getBlock();
+        Material type = block.getType();
         int max = this.blocks.getOrDefault(type, -1);
         if (max > 0) {
-            //TODO: check
-            event.setCancelled(true);
+            ChunkPosition chunkPosition = getChunkPosition(block);
+            if (chunkPosition.getPlacedBlocks(type) >= max) {
+                String message = this.plugin.getConfig().getString("limiter.message");
+                if (message != null && !message.trim().isEmpty())
+                    player.sendMessage(Component.text(message
+                        .replace("[count]", String.valueOf(max))
+                        .replace("[material]", type.name().toLowerCase().replace("_", " "))
+                    ));
+                event.setCancelled(true);
+            } else chunkPosition.placeBlock(type);
         }
     }
 

@@ -4,15 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
-import net.simplyvanilla.noillegals.check.BlockInteractionCheck;
-import net.simplyvanilla.noillegals.check.BlockPlaceCheck;
-import net.simplyvanilla.noillegals.check.CraftCheck;
-import net.simplyvanilla.noillegals.check.InventoryCreationCheck;
-import net.simplyvanilla.noillegals.check.InventoryItemCheck;
-import net.simplyvanilla.noillegals.check.ItemCollectCheck;
-import net.simplyvanilla.noillegals.check.ItemDropCheck;
-import net.simplyvanilla.noillegals.check.LoginCheck;
-import net.simplyvanilla.noillegals.check.PortalCheck;
+
+import net.simplyvanilla.noillegals.check.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -139,6 +132,10 @@ public final class NoIllegalsPlugin extends JavaPlugin {
 
         if (getConfig().getBoolean("check.inventoryCreationCheck")) {
             getServer().getPluginManager().registerEvents(new InventoryCreationCheck(this), this);
+        }
+
+        if (getConfig().getBoolean("check.blockLimiter")) {
+            getServer().getPluginManager().registerEvents(new BlockLimiter(this), this);
         }
     }
 

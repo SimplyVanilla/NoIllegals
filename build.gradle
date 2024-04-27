@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
-    id("xyz.jpenilla.run-paper") version "2.2.3"
+    id("xyz.jpenilla.run-paper") version "2.2.4"
 }
 
 group 'net.simplyvanilla'

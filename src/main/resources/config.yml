@@ -31,6 +31,9 @@ check:
   # Inventory Creation Check
   inventoryCreationCheck: true
 
+  # If true, will enable the limited-blocks section
+  blockLimiter: true
+
 log:
   itemRemoved: "[item] removed from [player_name]"
   playerItemReceive: "[player_name] received [amount] [item] at [x] [y] [z] with enchantments [enchantments]"
@@ -38,6 +41,16 @@ log:
   inventoryOpen: "[player_name] opened [block_type] at [x] [y] [z]"
   inventoryCreation: "[player_name] created [inventory_type] at [x] [y] [z]"
   playerDroppedItem: "[player_name] dropped [item] [amount] at [x] [y] [z] with enchantments [enchantments]"
+  materialNotFound: "Could not find material [material] from configuration file"
+
+limiter:
+  # To disable, type ""
+  message: "&cYou cannot place more than &4[count] [material] &cin a single chunk."
+  # The materials defined in this section will be limited per chunk once placed.
+  # Meaning, one cannot place more than the number specified of blocks in the same 16x16 area.
+  # Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+  blocks:
+    SPAWNER: 7
 
 # Reference: https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 blockedItemTypes:
